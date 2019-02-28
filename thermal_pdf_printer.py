@@ -7,6 +7,8 @@ import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
 
+import datetime
+
 from pdf2image import convert_from_path, convert_from_bytes
 from pdf2image.exceptions import (
     PDFInfoNotInstalledError,
@@ -31,11 +33,12 @@ ratio = currentHeight/currentWidth
 width=384
 height = int(width*ratio)
 img = background.resize((width,height))
-img.save('receipt_resized.jpg')
+img_name = datetime.datetime.today().strftime("%Y%m%d%H%M%S") + '.jpg'
+img.save(img_name)
 
 
 from escpos.printer import Usb
 
 p = Usb(0x0416, 0x5011, out_ep=3)
-p.image('receipt_resized.jpg')
+p.image(img_name)
 p.text('\n\n\n\n\n\n')
